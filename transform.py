@@ -1,11 +1,21 @@
 import json
 import mysql.connector
+import re
+
+def extract_decimal(string):
+    pattern = r'\d+\.\d+'  # Match the pattern of a decimal number
+    match = re.search(pattern, string)
+    
+    if match:
+        return str(match.group())  # Convert the matched decimal to a float
+    else:
+        return ""
 
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="",
-  database="cost_of_living"
+  password="root",
+  database="costofliving"
 )
 mycursor = mydb.cursor()
 
@@ -17,13 +27,17 @@ countries = ['Cambodia', 'Paraguay', 'Kazakhstan', 'Portugal', 'Syria', 'Bahamas
 countriesId = 1
 citiesId = 1
 for country in countries:
+    if False == (country in jsonData and jsonData[country] is not None and 'child' in jsonData[country] and jsonData[country]['child'] is not None):
+        continue
     restaurantsAVG = []
     restaurantsRange = []
     for elem in (jsonData[country]['\n\nRestaurants']):
+        if elem == None:
+                continue
         if(elem[1] == ' ?' or elem[1] == ''):
             restaurantsAVG.append('NULL')
         else:
-            restaurantsAVG.append(elem[1][1:-2].replace(",", "").strip())
+            restaurantsAVG.append(extract_decimal(elem[1]))
         if(elem[2] == ' ?' or elem[2] == ''):
             restaurantsRange.append('NULL')
         else:
@@ -34,7 +48,7 @@ for country in countries:
         if(elem[1] == ' ?' or elem[1] == ''):
             marketsAVG.append('NULL')
         else:
-            marketsAVG.append(elem[1][1:-2].replace(",", "").strip())
+            marketsAVG.append(extract_decimal(elem[1]))
         if(elem[2] == ' ?' or elem[2] == ''):
             marketsRange.append('NULL')
         else:
@@ -45,7 +59,7 @@ for country in countries:
         if(elem[1] == ' ?' or elem[1] == ''):
             transportationAVG.append('NULL')
         else:
-            transportationAVG.append(elem[1][1:-2].replace(",", "").strip())
+            transportationAVG.append(extract_decimal(elem[1]))
         if(elem[2] == ' ?' or elem[2] == ''):
             transportationRange.append('NULL')
         else:
@@ -57,7 +71,7 @@ for country in countries:
         if(elem[1] == ' ?' or elem[1] == ''):
             utilitiesAVG.append('NULL')
         else:
-            utilitiesAVG.append(elem[1][1:-2].replace(",", "").strip())
+            utilitiesAVG.append(extract_decimal(elem[1]))
         if(elem[2] == ' ?' or elem[2] == ''):
             utilitiesRange.append('NULL')
         else:
@@ -69,7 +83,7 @@ for country in countries:
         if(elem[1] == ' ?' or elem[1] == ''):
             leisureAVG.append('NULL')
         else:
-            leisureAVG.append(elem[1][1:-2].replace(",", "").strip())
+            leisureAVG.append(extract_decimal(elem[1]))
         if(elem[2] == ' ?' or elem[2] == ''):
            leisureRange.append('NULL')
         else:
@@ -81,7 +95,7 @@ for country in countries:
         if(elem[1] == ' ?' or elem[1] == ''):
             childcareAVG.append('NULL')
         else:
-            childcareAVG.append(elem[1][1:-2].replace(",", "").strip())
+            childcareAVG.append(extract_decimal(elem[1]))
         if(elem[2] == ' ?' or elem[2] == ''):
             childcareRange.append('NULL')
         else:
@@ -93,7 +107,7 @@ for country in countries:
         if(elem[1] == ' ?' or elem[1] == ''):
             clothingAVG.append('NULL')
         else:
-            clothingAVG.append(elem[1][1:-2].replace(",", "").strip())
+            clothingAVG.append(extract_decimal(elem[1]))
         if(elem[2] == ' ?' or elem[2] == ''):
             clothingRange.append('NULL')
         else:
@@ -105,7 +119,7 @@ for country in countries:
         if(elem[1] == ' ?' or elem[1] == ''):
             rentAVG.append('NULL')
         else:
-            rentAVG.append(elem[1][1:-2].replace(",", "").strip())
+            rentAVG.append(extract_decimal(elem[1]))
         if(elem[2] == ' ?' or elem[2] == ''):
             rentRange.append('NULL')
         else:
@@ -117,7 +131,7 @@ for country in countries:
         if(elem[1] == ' ?' or elem[1] == ''):
             buyHouseAVG.append('NULL')
         else:
-            buyHouseAVG.append(elem[1][1:-2].replace(",", "").strip())
+            buyHouseAVG.append(extract_decimal(elem[1]))
         if(elem[2] == ' ?' or elem[2] == ''):
             buyHouseRange.append('NULL')
         else:
@@ -129,7 +143,7 @@ for country in countries:
         if(elem[1] == ' ?' or elem[1] == ''):
             financingAVG.append('NULL')
         else:
-            financingAVG.append(elem[1][1:-2].replace(",", "").strip())
+            financingAVG.append(extract_decimal(elem[1]))
         if(elem[2] == ' ?' or elem[2] == ''):
             financingRange.append('NULL')
         else:
@@ -159,7 +173,7 @@ for country in countries:
         print(financingRange[0])
     '''
 
-    sql = "INSERT INTO CostOfLivingCountries VALUES (" + str(countriesId) + ", \"" + country + "\", " + restaurantsAVG[0] + ", \"" + restaurantsRange[0] + "\", " + restaurantsAVG[1] + ", \"" + restaurantsRange[1] + "\", " + restaurantsAVG[2] + ", \"" + restaurantsRange[2] + "\", " + restaurantsAVG[3] + ", \"" + restaurantsRange[3] + "\", " + restaurantsAVG[4] + ", \"" + restaurantsRange[4] + "\", " + restaurantsAVG[5] + ", \"" + restaurantsRange[5] + "\", " + restaurantsAVG[6] + ", \"" + restaurantsRange[6] + "\", " + restaurantsAVG[7] + ", \"" + restaurantsRange[7] + "\", " + marketsAVG[0] + ", \"" + marketsRange[0] + "\", " + marketsAVG[1] + ", \"" + marketsRange[1] + "\", " + marketsAVG[2] + ", \"" + marketsRange[2] + "\", " + marketsAVG[3] + ", \"" + marketsRange[3] + "\", " + marketsAVG[4] + ", \"" + marketsRange[4] + "\", " + marketsAVG[5] + ", \"" + marketsRange[5] + "\", " + marketsAVG[6] + ", \"" + marketsRange[6] + "\", " + marketsAVG[7] + ", \"" + marketsRange[7] + "\", " + marketsAVG[8] + ", \"" + marketsRange[8] + "\", " + marketsAVG[9] + ", \"" + marketsRange[9] + "\", " + marketsAVG[10] + ", \"" + marketsRange[10] + "\", " + marketsAVG[11] + ", \"" + marketsRange[11] + "\", " + marketsAVG[12] + ", \"" + marketsRange[12] + "\", " + marketsAVG[13] + ", \"" + marketsRange[13] + "\", " + marketsAVG[14] + ", \"" + marketsRange[14] + "\", " + marketsAVG[15] + ", \"" + marketsRange[15] + "\", " + marketsAVG[16] + ", \"" + marketsRange[16] + "\", " + marketsAVG[17] + ", \"" + marketsRange[17] + "\", " + marketsAVG[18] + ", \"" + marketsRange[18] + "\", " + transportationAVG[0] + ", \"" + transportationRange[0] + "\", " + transportationAVG[1] + ", \"" + transportationRange[1] + "\", " + transportationAVG[2] + ", \"" + transportationRange[2] + "\", " + transportationAVG[3] + ", \"" + transportationRange[3] + "\", " + transportationAVG[4] + ", \"" + transportationRange[4] + "\", " + transportationAVG[5] + ", \"" + transportationRange[5] + "\", " + transportationAVG[6] + ", \"" + transportationRange[6] + "\", " + transportationAVG[7] + ", \"" + transportationRange[7] + "\", " + utilitiesAVG[0] + ", \"" + utilitiesRange[0] + "\", " + utilitiesAVG[1] + ", \"" + utilitiesRange[1] + "\", " + utilitiesAVG[2] + ", \"" + utilitiesRange[2] + "\", " + leisureAVG[0] + ", \"" + leisureRange[0] + "\", "  + leisureAVG[1] + ", \"" + leisureRange[1] + "\", " + leisureAVG[2] + ", \"" + leisureRange[2] + "\", " + childcareAVG[0] + ", \"" + childcareRange[0] + "\", " + childcareAVG[1] + ", \"" + childcareRange[1] + "\", " + clothingAVG[0] + ", \"" + clothingRange[0] + "\", " + clothingAVG[1] + ", \"" + clothingRange[1] + "\", " + clothingAVG[2] + ", \"" + clothingRange[2] + "\", " + clothingAVG[3] + ", \"" + clothingRange[3] + "\", " + rentAVG[0] + ", \"" + rentRange[0] + "\", " + rentAVG[1] + ", \"" + rentRange[1] + "\", " + rentAVG[2] + ", \"" + rentRange[2] + "\", " + rentAVG[3] + ", \"" + rentRange[3] + "\", "  + buyHouseAVG[0] + ", \"" + buyHouseRange[0] + "\", " + buyHouseAVG[1] + ", \"" + buyHouseRange[1] + "\", " + financingAVG[0] + ", \"" + financingRange[0] + "\", " + financingAVG[1] + ", \"" + financingRange[1] + "\");";
+    sql = "INSERT INTO CostOfLivingCountries VALUES (" + str(countriesId) + ", \"" + country + "\", " + restaurantsAVG[0] + ", \"" + restaurantsRange[0] + "\", " + restaurantsAVG[1] + ", \"" + restaurantsRange[1] + "\", " + restaurantsAVG[2] + ", \"" + restaurantsRange[2] + "\", " + restaurantsAVG[3] + ", \"" + restaurantsRange[3] + "\", " + restaurantsAVG[4] + ", \"" + restaurantsRange[4] + "\", " + restaurantsAVG[5] + ", \"" + restaurantsRange[5] + "\", " + restaurantsAVG[6] + ", \"" + restaurantsRange[6] + "\", " + restaurantsAVG[7] + ", \"" + restaurantsRange[7] + "\", " + marketsAVG[0] + ", \"" + marketsRange[0] + "\", " + marketsAVG[1] + ", \"" + marketsRange[1] + "\", " + marketsAVG[2] + ", \"" + marketsRange[2] + "\", " + marketsAVG[3] + ", \"" + marketsRange[3] + "\", " + marketsAVG[4] + ", \"" + marketsRange[4] + "\", " + marketsAVG[5] + ", \"" + marketsRange[5] + "\", " + marketsAVG[6] + ", \"" + marketsRange[6] + "\", " + marketsAVG[7] + ", \"" + marketsRange[7] + "\", " + marketsAVG[8] + ", \"" + marketsRange[8] + "\", " + marketsAVG[9] + ", \"" + marketsRange[9] + "\", " + marketsAVG[10] + ", \"" + marketsRange[10] + "\", " + marketsAVG[11] + ", \"" + marketsRange[11] + "\", " + marketsAVG[12] + ", \"" + marketsRange[12] + "\", " + marketsAVG[13] + ", \"" + marketsRange[13] + "\", " + marketsAVG[14] + ", \"" + marketsRange[14] + "\", " + marketsAVG[15] + ", \"" + marketsRange[15] + "\", " + marketsAVG[16] + ", \"" + marketsRange[16] + "\", " + marketsAVG[17] + ", \"" + marketsRange[17] + "\", " + marketsAVG[18] + ", \"" + marketsRange[18] + "\", " + transportationAVG[0] + ", \"" + transportationRange[0] + "\", " + transportationAVG[1] + ", \"" + transportationRange[1] + "\", " + transportationAVG[2] + ", \"" + transportationRange[2] + "\", " + transportationAVG[3] + ", \"" + transportationRange[3] + "\", " + transportationAVG[4] + ", \"" + transportationRange[4] + "\", " + transportationAVG[5] + ", \"" + transportationRange[5] + "\", " + transportationAVG[6] + ", \"" + transportationRange[6] + "\", " + transportationAVG[7] + ", \"" + transportationRange[7] + "\", " + utilitiesAVG[0] + ", \"" + utilitiesRange[0] + "\", " + utilitiesAVG[1] + ", \"" + utilitiesRange[1] + "\", " + utilitiesAVG[2] + ", \"" + utilitiesRange[2] + "\", " + leisureAVG[0] + ", \"" + leisureRange[0] + "\", "  + leisureAVG[1] + ", \"" + leisureRange[1] + "\", " + leisureAVG[2] + ", \"" + leisureRange[2] + "\", " + childcareAVG[0] + ", \"" + childcareRange[0] + "\", " + childcareAVG[1] + ", \"" + childcareRange[1] + "\", " + clothingAVG[0] + ", \"" + clothingRange[0] + "\", " + clothingAVG[1] + ", \"" + clothingRange[1] + "\", " + clothingAVG[2] + ", \"" + clothingRange[2] + "\", " + clothingAVG[3] + ", \"" + clothingRange[3] + "\", " + rentAVG[0] + ", \"" + rentRange[0] + "\", " + rentAVG[1] + ", \"" + rentRange[1] + "\", " + rentAVG[2] + ", \"" + rentRange[2] + "\", " + rentAVG[3] + ", \"" + rentRange[3] + "\", "  + buyHouseAVG[0] + ", \"" + buyHouseRange[0] + "\", " + buyHouseAVG[1] + ", \"" + buyHouseRange[1] + "\", " + financingAVG[0] + ", \"" + financingRange[0] + "\", " + financingAVG[1] + ", \"" + financingRange[1] + "\");"
     countriesId += 1
     '''
     text_file = open("sample.txt", "w")
@@ -170,16 +184,20 @@ for country in countries:
 
     cities = []
     for city in jsonData[country]['child']:
-        if(city == ''):
+        if False == (city in jsonData[country]['child'] and jsonData[country]['child'][city] is not None):
+            continue
+        elif(city == '' or city == 'none'):
             continue
         cities.append(city)
         restaurantsAVG = []
         restaurantsRange = []
         for elem in (jsonData[country]['child'][city]['\n\nRestaurants']):
+            if elem == None:
+                continue
             if(elem[1] == ' ?' or elem[1] == ''):
                 restaurantsAVG.append('NULL')
             else:
-                restaurantsAVG.append(elem[1][1:-2].replace(",", "").strip())
+                restaurantsAVG.append(extract_decimal(elem[1]))
             if(elem[2] == ' ?' or elem[2] == ''):
                 restaurantsRange.append('NULL')
             else:
@@ -190,7 +208,7 @@ for country in countries:
             if(elem[1] == ' ?' or elem[1] == ''):
                 marketsAVG.append('NULL')
             else:
-                marketsAVG.append(elem[1][1:-2].replace(",", "").strip())
+                marketsAVG.append(extract_decimal(elem[1]))
             if(elem[2] == ' ?' or elem[2] == ''):
                 marketsRange.append('NULL')
             else:
@@ -201,7 +219,7 @@ for country in countries:
             if(elem[1] == ' ?' or elem[1] == ''):
                 transportationAVG.append('NULL')
             else:
-                transportationAVG.append(elem[1][1:-2].replace(",", "").strip())
+                transportationAVG.append(extract_decimal(elem[1]))
             if(elem[2] == ' ?' or elem[2] == ''):
                 transportationRange.append('NULL')
             else:
@@ -213,7 +231,7 @@ for country in countries:
             if(elem[1] == ' ?' or elem[1] == ''):
                 utilitiesAVG.append('NULL')
             else:
-                utilitiesAVG.append(elem[1][1:-2].replace(",", "").strip())
+                utilitiesAVG.append(extract_decimal(elem[1]))
             if(elem[2] == ' ?' or elem[2] == ''):
                 utilitiesRange.append('NULL')
             else:
@@ -225,7 +243,7 @@ for country in countries:
             if(elem[1] == ' ?' or elem[1] == ''):
                 leisureAVG.append('NULL')
             else:
-                leisureAVG.append(elem[1][1:-2].replace(",", "").strip())
+                leisureAVG.append(extract_decimal(elem[1]))
             if(elem[2] == ' ?' or elem[2] == ''):
                leisureRange.append('NULL')
             else:
@@ -237,7 +255,7 @@ for country in countries:
             if(elem[1] == ' ?' or elem[1] == ''):
                 childcareAVG.append('NULL')
             else:
-                childcareAVG.append(elem[1][1:-2].replace(",", "").strip())
+                childcareAVG.append(extract_decimal(elem[1]))
             if(elem[2] == ' ?' or elem[2] == ''):
                 childcareRange.append('NULL')
             else:
@@ -249,7 +267,7 @@ for country in countries:
             if(elem[1] == ' ?' or elem[1] == ''):
                 clothingAVG.append('NULL')
             else:
-                clothingAVG.append(elem[1][1:-2].replace(",", "").strip())
+                clothingAVG.append(extract_decimal(elem[1]))
             if(elem[2] == ' ?' or elem[2] == ''):
                 clothingRange.append('NULL')
             else:
@@ -261,7 +279,7 @@ for country in countries:
             if(elem[1] == ' ?' or elem[1] == ''):
                 rentAVG.append('NULL')
             else:
-                rentAVG.append(elem[1][1:-2].replace(",", "").strip())
+                rentAVG.append(extract_decimal(elem[1]))
             if(elem[2] == ' ?' or elem[2] == ''):
                 rentRange.append('NULL')
             else:
@@ -273,7 +291,7 @@ for country in countries:
             if(elem[1] == ' ?' or elem[1] == ''):
                 buyHouseAVG.append('NULL')
             else:
-                buyHouseAVG.append(elem[1][1:-2].replace(",", "").strip())
+                buyHouseAVG.append(extract_decimal(elem[1]))
             if(elem[2] == ' ?' or elem[2] == ''):
                 buyHouseRange.append('NULL')
             else:
@@ -285,7 +303,7 @@ for country in countries:
             if(elem[1] == ' ?' or elem[1] == ''):
                 financingAVG.append('NULL')
             else:
-                financingAVG.append(elem[1][1:-2].replace(",", "").strip())
+                financingAVG.append(extract_decimal(elem[1]))
             if(elem[2] == ' ?' or elem[2] == ''):
                 financingRange.append('NULL')
             else:
@@ -314,8 +332,8 @@ for country in countries:
             print(financingAVG[0])
             print(financingRange[0])
         '''
-
-        sql = "INSERT INTO CostOfLivingCities VALUES (" + str(citiesId) + ", \"" + country + "\", \"" + city + "\", " + restaurantsAVG[0] + ", \"" + restaurantsRange[0] + "\", " + restaurantsAVG[1] + ", \"" + restaurantsRange[1] + "\", " + restaurantsAVG[2] + ", \"" + restaurantsRange[2] + "\", " + restaurantsAVG[3] + ", \"" + restaurantsRange[3] + "\", " + restaurantsAVG[4] + ", \"" + restaurantsRange[4] + "\", " + restaurantsAVG[5] + ", \"" + restaurantsRange[5] + "\", " + restaurantsAVG[6] + ", \"" + restaurantsRange[6] + "\", " + restaurantsAVG[7] + ", \"" + restaurantsRange[7] + "\", " + marketsAVG[0] + ", \"" + marketsRange[0] + "\", " + marketsAVG[1] + ", \"" + marketsRange[1] + "\", " + marketsAVG[2] + ", \"" + marketsRange[2] + "\", " + marketsAVG[3] + ", \"" + marketsRange[3] + "\", " + marketsAVG[4] + ", \"" + marketsRange[4] + "\", " + marketsAVG[5] + ", \"" + marketsRange[5] + "\", " + marketsAVG[6] + ", \"" + marketsRange[6] + "\", " + marketsAVG[7] + ", \"" + marketsRange[7] + "\", " + marketsAVG[8] + ", \"" + marketsRange[8] + "\", " + marketsAVG[9] + ", \"" + marketsRange[9] + "\", " + marketsAVG[10] + ", \"" + marketsRange[10] + "\", " + marketsAVG[11] + ", \"" + marketsRange[11] + "\", " + marketsAVG[12] + ", \"" + marketsRange[12] + "\", " + marketsAVG[13] + ", \"" + marketsRange[13] + "\", " + marketsAVG[14] + ", \"" + marketsRange[14] + "\", " + marketsAVG[15] + ", \"" + marketsRange[15] + "\", " + marketsAVG[16] + ", \"" + marketsRange[16] + "\", " + marketsAVG[17] + ", \"" + marketsRange[17] + "\", " + marketsAVG[18] + ", \"" + marketsRange[18] + "\", " + transportationAVG[0] + ", \"" + transportationRange[0] + "\", " + transportationAVG[1] + ", \"" + transportationRange[1] + "\", " + transportationAVG[2] + ", \"" + transportationRange[2] + "\", " + transportationAVG[3] + ", \"" + transportationRange[3] + "\", " + transportationAVG[4] + ", \"" + transportationRange[4] + "\", " + transportationAVG[5] + ", \"" + transportationRange[5] + "\", " + transportationAVG[6] + ", \"" + transportationRange[6] + "\", " + transportationAVG[7] + ", \"" + transportationRange[7] + "\", " + utilitiesAVG[0] + ", \"" + utilitiesRange[0] + "\", " + utilitiesAVG[1] + ", \"" + utilitiesRange[1] + "\", " + utilitiesAVG[2] + ", \"" + utilitiesRange[2] + "\", " + leisureAVG[0] + ", \"" + leisureRange[0] + "\", "  + leisureAVG[1] + ", \"" + leisureRange[1] + "\", " + leisureAVG[2] + ", \"" + leisureRange[2] + "\", " + childcareAVG[0] + ", \"" + childcareRange[0] + "\", " + childcareAVG[1] + ", \"" + childcareRange[1] + "\", " + clothingAVG[0] + ", \"" + clothingRange[0] + "\", " + clothingAVG[1] + ", \"" + clothingRange[1] + "\", " + clothingAVG[2] + ", \"" + clothingRange[2] + "\", " + clothingAVG[3] + ", \"" + clothingRange[3] + "\", " + rentAVG[0] + ", \"" + rentRange[0] + "\", " + rentAVG[1] + ", \"" + rentRange[1] + "\", " + rentAVG[2] + ", \"" + rentRange[2] + "\", " + rentAVG[3] + ", \"" + rentRange[3] + "\", "  + buyHouseAVG[0] + ", \"" + buyHouseRange[0] + "\", " + buyHouseAVG[1] + ", \"" + buyHouseRange[1] + "\", " + financingAVG[0] + ", \"" + financingRange[0] + "\", " + financingAVG[1] + ", \"" + financingRange[1] + "\");";
+        sql = "INSERT INTO CostOfLivingCities VALUES (" + str(citiesId) + ", \"" + country + "\", \"" + city + "\", " + restaurantsAVG[0] + ", \"" + restaurantsRange[0] + "\", " + restaurantsAVG[1] + ", \"" + restaurantsRange[1] + "\", " + restaurantsAVG[2] + ", \"" + restaurantsRange[2] + "\", " + restaurantsAVG[3] + ", \"" + restaurantsRange[3] + "\", " + restaurantsAVG[4] + ", \"" + restaurantsRange[4] + "\", " + restaurantsAVG[5] + ", \"" + restaurantsRange[5] + "\", " + restaurantsAVG[6] + ", \"" + restaurantsRange[6] + "\", " + restaurantsAVG[7] + ", \"" + restaurantsRange[7] + "\", " + marketsAVG[0] + ", \"" + marketsRange[0] + "\", " + marketsAVG[1] + ", \"" + marketsRange[1] + "\", " + marketsAVG[2] + ", \"" + marketsRange[2] + "\", " + marketsAVG[3] + ", \"" + marketsRange[3] + "\", " + marketsAVG[4] + ", \"" + marketsRange[4] + "\", " + marketsAVG[5] + ", \"" + marketsRange[5] + "\", " + marketsAVG[6] + ", \"" + marketsRange[6] + "\", " + marketsAVG[7] + ", \"" + marketsRange[7] + "\", " + marketsAVG[8] + ", \"" + marketsRange[8] + "\", " + marketsAVG[9] + ", \"" + marketsRange[9] + "\", " + marketsAVG[10] + ", \"" + marketsRange[10] + "\", " + marketsAVG[11] + ", \"" + marketsRange[11] + "\", " + marketsAVG[12] + ", \"" + marketsRange[12] + "\", " + marketsAVG[13] + ", \"" + marketsRange[13] + "\", " + marketsAVG[14] + ", \"" + marketsRange[14] + "\", " + marketsAVG[15] + ", \"" + marketsRange[15] + "\", " + marketsAVG[16] + ", \"" + marketsRange[16] + "\", " + marketsAVG[17] + ", \"" + marketsRange[17] + "\", " + marketsAVG[18] + ", \"" + marketsRange[18] + "\", " + transportationAVG[0] + ", \"" + transportationRange[0] + "\", " + transportationAVG[1] + ", \"" + transportationRange[1] + "\", " + transportationAVG[2] + ", \"" + transportationRange[2] + "\", " + transportationAVG[3] + ", \"" + transportationRange[3] + "\", " + transportationAVG[4] + ", \"" + transportationRange[4] + "\", " + transportationAVG[5] + ", \"" + transportationRange[5] + "\", " + transportationAVG[6] + ", \"" + transportationRange[6] + "\", " + transportationAVG[7] + ", \"" + transportationRange[7] + "\", " + utilitiesAVG[0] + ", \"" + utilitiesRange[0] + "\", " + utilitiesAVG[1] + ", \"" + utilitiesRange[1] + "\", " + utilitiesAVG[2] + ", \"" + utilitiesRange[2] + "\", " + leisureAVG[0] + ", \"" + leisureRange[0] + "\", "  + leisureAVG[1] + ", \"" + leisureRange[1] + "\", " + leisureAVG[2] + ", \"" + leisureRange[2] + "\", " + childcareAVG[0] + ", \"" + childcareRange[0] + "\", " + childcareAVG[1] + ", \"" + childcareRange[1] + "\", " + clothingAVG[0] + ", \"" + clothingRange[0] + "\", " + clothingAVG[1] + ", \"" + clothingRange[1] + "\", " + clothingAVG[2] + ", \"" + clothingRange[2] + "\", " + clothingAVG[3] + ", \"" + clothingRange[3] + "\", " + rentAVG[0] + ", \"" + rentRange[0] + "\", " + rentAVG[1] + ", \"" + rentRange[1] + "\", " + rentAVG[2] + ", \"" + rentRange[2] + "\", " + rentAVG[3] + ", \"" + rentRange[3] + "\", "  + buyHouseAVG[0] + ", \"" + buyHouseRange[0] + "\", " + buyHouseAVG[1] + ", \"" + buyHouseRange[1] + "\", " + financingAVG[0] + ", \"" + financingRange[0] + "\", " + financingAVG[1] + ", \"" + financingRange[1] + "\");"
+        #print("INSERT INTO CostOfLivingCities VALUES (" + str(citiesId) + ", \"" + country + "\", \"" + city + "\", " + restaurantsAVG[0] + ", \"" + restaurantsRange[0] + "\", " + restaurantsAVG[1] + ", \"" + restaurantsRange[1] + "\", " + restaurantsAVG[2] + ", \"" + restaurantsRange[2] + "\", " + restaurantsAVG[3] + ", \"" + restaurantsRange[3] + "\", " + restaurantsAVG[4] + ", \"" + restaurantsRange[4] + "\", " + restaurantsAVG[5] + ", \"" + restaurantsRange[5] + "\", " + restaurantsAVG[6] + ", \"" + restaurantsRange[6] + "\", " + restaurantsAVG[7] + ", \"" + restaurantsRange[7] + "\", " + marketsAVG[0] + ", \"" + marketsRange[0] + "\", " + marketsAVG[1] + ", \"" + marketsRange[1] + "\", " + marketsAVG[2] + ", \"" + marketsRange[2] + "\", " + marketsAVG[3] + ", \"" + marketsRange[3] + "\", " + marketsAVG[4] + ", \"" + marketsRange[4] + "\", " + marketsAVG[5] + ", \"" + marketsRange[5] + "\", " + marketsAVG[6] + ", \"" + marketsRange[6] + "\", " + marketsAVG[7] + ", \"" + marketsRange[7] + "\", " + marketsAVG[8] + ", \"" + marketsRange[8] + "\", " + marketsAVG[9] + ", \"" + marketsRange[9] + "\", " + marketsAVG[10] + ", \"" + marketsRange[10] + "\", " + marketsAVG[11] + ", \"" + marketsRange[11] + "\", " + marketsAVG[12] + ", \"" + marketsRange[12] + "\", " + marketsAVG[13] + ", \"" + marketsRange[13] + "\", " + marketsAVG[14] + ", \"" + marketsRange[14] + "\", " + marketsAVG[15] + ", \"" + marketsRange[15] + "\", " + marketsAVG[16] + ", \"" + marketsRange[16] + "\", " + marketsAVG[17] + ", \"" + marketsRange[17] + "\", " + marketsAVG[18] + ", \"" + marketsRange[18] + "\", " + transportationAVG[0] + ", \"" + transportationRange[0] + "\", " + transportationAVG[1] + ", \"" + transportationRange[1] + "\", " + transportationAVG[2] + ", \"" + transportationRange[2] + "\", " + transportationAVG[3] + ", \"" + transportationRange[3] + "\", " + transportationAVG[4] + ", \"" + transportationRange[4] + "\", " + transportationAVG[5] + ", \"" + transportationRange[5] + "\", " + transportationAVG[6] + ", \"" + transportationRange[6] + "\", " + transportationAVG[7] + ", \"" + transportationRange[7] + "\", " + utilitiesAVG[0] + ", \"" + utilitiesRange[0] + "\", " + utilitiesAVG[1] + ", \"" + utilitiesRange[1] + "\", " + utilitiesAVG[2] + ", \"" + utilitiesRange[2] + "\", " + leisureAVG[0] + ", \"" + leisureRange[0] + "\", "  + leisureAVG[1] + ", \"" + leisureRange[1] + "\", " + leisureAVG[2] + ", \"" + leisureRange[2] + "\", " + childcareAVG[0] + ", \"" + childcareRange[0] + "\", " + childcareAVG[1] + ", \"" + childcareRange[1] + "\", " + clothingAVG[0] + ", \"" + clothingRange[0] + "\", " + clothingAVG[1] + ", \"" + clothingRange[1] + "\", " + clothingAVG[2] + ", \"" + clothingRange[2] + "\", " + clothingAVG[3] + ", \"" + clothingRange[3] + "\", " + rentAVG[0] + ", \"" + rentRange[0] + "\", " + rentAVG[1] + ", \"" + rentRange[1] + "\", " + rentAVG[2] + ", \"" + rentRange[2] + "\", " + rentAVG[3] + ", \"" + rentRange[3] + "\", "  + buyHouseAVG[0] + ", \"" + buyHouseRange[0] + "\", " + buyHouseAVG[1] + ", \"" + buyHouseRange[1] + "\", " + financingAVG[0] + ", \"" + financingRange[0] + "\", " + financingAVG[1] + ", \"" + financingRange[1] + "\");")    
         citiesId += 1
         '''
         text_file = open("sample.txt", "w")
@@ -325,3 +343,5 @@ for country in countries:
         mycursor.execute(sql)
 mydb.commit()
 print("records inserted.")
+
+
